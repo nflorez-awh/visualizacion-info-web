@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualización y Diseño de la Información</title>
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./styles/desktop.css" />
+  <link rel="stylesheet" href="./styles/start-menu.css">
+  <link rel="stylesheet" href="./styles/icons.css" />
+  <link rel="stylesheet" href="./styles/taskbar.css" />
+
+  <link rel="stylesheet" href="./styles/drag-drop.css">
+  <link rel="stylesheet" href="./styles/context-menu.css">
+</head>
+
+<body>
+  <!-- Escritorio -->
+  <section class="desktop__container">
+
+    <!-- Barra de Tareas -->
+    <nav class="desktop__taskbar">
+      <!-- Botón Start -->
+      <button class="start-btn">
+        <img src="./src/icons/windows__ico.svg" alt="Start">
+        <span>Start</span>
+      </button>
+
+      <!-- Espacio para los botones de las aplicaciones abiertas -->
+      <div class="taskbar__tasks"></div>
+
+      <!-- Reloj en el otro extremo -->
+      <div class="taskbar__clock">12:00 PM</div>
+    </nav>
+
+    <!-- Iconos del escritorio-->
+
+
+
+    <div class="desktop__icons">
+      <div class="icon">
+        <img src="./src/icons/control-panel__ico.svg" alt="Control Panel" />
+        <span>Control Panel</span>
+      </div>
+
+
+
+      <div class="icon">
+        <img src="./src/icons/documents__ico.svg" alt="My Documents" />
+        <span>My Documents</span>
+      </div>
+
+      <div class="icon">
+        <img src="./src/icons/desktop__ico.svg" alt="My Computer" />
+        <span>My Computer</span>
+      </div>
+
+      <div class="icon">
+        <img src="./src/icons/recycle-bin__ico.svg" alt="Recycle Bin" />
+        <span>Recycle Bin</span>
+      </div>
+
+      <div class="icon">
+        <img src="./src/icons/recycle-bin__ico.svg" alt="Recycle Bin" />
+        <span>Recycle Bin</span>
+      </div>
+      <div class="icon">
+        <img src="./src/icons/recycle-bin__ico.svg" alt="Recycle Bin" />
+        <span>Recycle Bin</span>
+      </div>
+
+
+    </div>
+
+
+  </section>
+  <script src="./scripts/taskbar-clock.js"></script>
+  <script src="./scripts/start-menu.js"></script>
+  <script src="./scripts/context-menu.js"></script>
+</body>
+
+</html>

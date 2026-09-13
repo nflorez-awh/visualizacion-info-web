@@ -1,0 +1,33 @@
+:root {
+  --color-border-light: #fff;
+  --color-border-dark: #808080;
+  --color-bg-taskbar: #c0c0c0;
+  --color-bg-border: #9b9683;
+  --color-text-icon: black;
+  --shadow-text: 1px 1px 1px text-shadow: var(--shadow-text);
+  --font-size-icon: 18px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "W95Fa";
+  src: url("./src/fonts/W95Fa.woff2") format("woff");
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+
+  background-color: var(--color-bg-border); /* color de los bordes */
+
+  font-family: "W95Fa", sans-serif;
+}
