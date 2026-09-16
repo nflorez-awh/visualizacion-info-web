@@ -24,153 +24,84 @@ const COLORS = {
 };
 
 // ---------- Datos de archivos ----------
+// Los datos ya NO se definen aquí. Se cargan desde data/files.json
+// (ver loadFilesData() más abajo). Para agregar/editar archivos y
+// gráficos, edita ese JSON — no hace falta tocar este script.
+// Guía completa: data/README.md
 
-const FILES = [
-    {
-        id: 'F001',
-        filename: 'OPERATION_PHOENIX.TXT',
-        size: 14336,
-        date: '03-17-98',
-        classification: 'TOP SECRET',
-        requiresFloppy: false,
-        chart: null,
-        paragraphs: [
-            'Informe operativo sobre la reubicación de tres activos en la región centroeuropea. La operación se completó sin incidentes reportables.',
-            'Se recomienda revisión de protocolo de extracción antes de la próxima fase, prevista para el primer trimestre de 1999.',
-        ],
-    },
-    {
-        id: 'F002',
-        filename: 'AGENT_ROSTER_98.DAT',
-        size: 8192,
-        date: '01-09-98',
-        classification: 'TOP SECRET',
-        requiresFloppy: true,
-        chart: null,
-        paragraphs: [
-            'Listado de activos operativos vigentes, organizado por sector geográfico y nivel de acceso.',
-            'Documento restringido a personal con autorización ULTRA. Todo acceso queda registrado.',
-        ],
-    },
-    {
-        id: 'F003',
-        filename: 'SATELLITE_COORDS.BIN',
-        size: 2048,
-        date: '06-04-98',
-        classification: 'SECRET',
-        requiresFloppy: false,
-        chart: null,
-        paragraphs: [
-            'Coordenadas de seguimiento satelital correspondientes a la ventana de observación de mayo-junio.',
-            'Datos crudos, sin procesar. Contactar a la unidad de análisis para su interpretación.',
-        ],
-    },
-    {
-        id: 'F004',
-        filename: 'BLACK_BUDGET_94-98.XLS',
-        size: 61440,
-        date: '12-31-97',
-        classification: 'TOP SECRET',
-        requiresFloppy: false,
-        chart: {
-            kind: 'bar',
-            title: 'PRESUPUESTO NEGRO — ASIGNACION ANUAL',
-            subtitle: 'USD Millones / Deptos clasificados / FY 1994-1998',
-            labels: ['1994', '1995', '1996', '1997', '1998'],
-            yMax: 600,
-            yStep: 150,
-            series: [
-                { name: 'INTELIGENCIA', color: COLORS.amber, values: [210, 225, 260, 315, 340] },
-                { name: 'OPERACIONES', color: COLORS.green, values: [345, 390, 420, 480, 540] },
-                { name: 'TECNOLOGIA', color: COLORS.paleMint, values: [90, 120, 145, 195, 225] },
-            ],
-        },
-        paragraphs: [],
-    },
-    {
-        id: 'F005',
-        filename: 'PROTOCOL_OMEGA.DOC',
-        size: 32768,
-        date: '08-22-98',
-        classification: 'TOP SECRET',
-        requiresFloppy: false,
-        chart: null,
-        paragraphs: [
-            'Protocolo de contingencia OMEGA. Define la cadena de mando y los procedimientos de emergencia ante la pérdida de comunicación con una célula operativa.',
-            'La activación de este protocolo requiere autorización de al menos dos oficiales de nivel ULTRA.',
-        ],
-    },
-    {
-        id: 'F006',
-        filename: 'ASSET_EXTRACTION.TXT',
-        size: 5120,
-        date: '09-01-98',
-        classification: 'CONFIDENTIAL',
-        requiresFloppy: true,
-        chart: null,
-        paragraphs: [
-            'Procedimiento estándar de extracción de activos en zonas de riesgo elevado.',
-            'Documento trasladado a soporte extraíble por política de retención de Archivo Central.',
-        ],
-    },
-    {
-        id: 'F007',
-        filename: 'THREAT_INDEX_1998.RPT',
-        size: 22016,
-        date: '06-15-98',
-        classification: 'SECRET',
-        requiresFloppy: false,
-        chart: {
-            kind: 'line',
-            title: 'INDICE DE AMENAZA — SEGUIMIENTO 1998',
-            subtitle: 'Escala 0-100 / Evaluacion semanal / SCI clearance requerido',
-            labels: ['ENE-01', 'ENE-15', 'FEB-01', 'FEB-15', 'MAR-01', 'MAR-15', 'ABR-01', 'ABR-15', 'MAY-01', 'MAY-15', 'JUN-01', 'JUN-15'],
-            yMax: 100,
-            yStep: 25,
-            series: [
-                { name: 'AMENAZA CYBER', color: COLORS.red, values: [15, 24, 35, 30, 40, 50, 65, 60, 45, 48, 42, 40] },
-                { name: 'AMENAZA EXTERNA', color: COLORS.amber, values: [40, 37, 43, 53, 60, 65, 57, 47, 42, 52, 50, 70] },
-                { name: 'AMENAZA INTERNA', color: COLORS.green, values: [20, 30, 38, 33, 40, 42, 37, 40, 35, 32, 28, 38] },
-            ],
-        },
-        paragraphs: [],
-    },
-    {
-        id: 'F008',
-        filename: 'ASSET_DISTRIBUTION.RPT',
-        size: 9728,
-        date: '07-30-98',
-        classification: 'SECRET',
-        requiresFloppy: true,
-        chart: {
-            kind: 'pie',
-            title: 'DISTRIBUCION DE ACTIVOS — ZONA GEOGRAFICA',
-            subtitle: 'Agentes activos por sector / Clasificado SECRET',
-            slices: [
-                { label: 'AFRICA', value: 7, color: COLORS.red },
-                { label: 'ASIA-PAC', value: 15, color: COLORS.paleMint },
-                { label: 'EUROPA-OCC', value: 28, color: COLORS.green },
-                { label: 'EUROPA-ORI', value: 18, color: COLORS.amber },
-                { label: 'LATAM', value: 10, color: COLORS.brown },
-                { label: 'MEDIO ESTE', value: 22, color: COLORS.greenDim },
-            ],
-        },
-        paragraphs: [],
-    },
-    {
-        id: 'F009',
-        filename: 'SIGINT_INTERCEPT_LOG.TXT',
-        size: 128512,
-        date: '07-30-98',
-        classification: 'SECRET',
-        requiresFloppy: false,
-        chart: null,
-        paragraphs: [
-            'Registro de interceptaciones de señal correspondientes al mes de julio. Volumen inusualmente alto en la banda de frecuencia 7.',
-            'Se adjunta remisión a la unidad de criptoanálisis para descifrado prioritario.',
-        ],
-    },
-];
+let FILES = [];
+let dataLoadError = null;
+
+// ---------- Carga de datos (data/files.json) ----------
+
+const DATA_URL = 'data/files.json';
+const REQUIRED_FIELDS = ['id', 'filename', 'size', 'date', 'classification'];
+
+// Convierte un color del JSON a un valor CSS válido.
+// Acepta nombres de la paleta ("green", "amber", ...) o un hex directo ("#ff00ff").
+function resolveColor(value) {
+    if (typeof value !== 'string') return COLORS.green;
+    if (value.startsWith('#')) return value;
+    return COLORS[value] || COLORS.green;
+}
+
+function resolveChartColors(chart) {
+    if (!chart) return chart;
+    if (Array.isArray(chart.series)) {
+        chart.series.forEach((s) => { s.color = resolveColor(s.color); });
+    }
+    if (Array.isArray(chart.slices)) {
+        chart.slices.forEach((s) => { s.color = resolveColor(s.color); });
+    }
+    return chart;
+}
+
+// Valida mínimamente cada entrada para no romper toda la app por un solo
+// archivo mal formado. Las entradas inválidas se descartan y se avisa en consola.
+function validateAndNormalizeFiles(raw) {
+    if (!Array.isArray(raw)) {
+        throw new Error('data/files.json debe ser un array de archivos (usa [ ] en la raíz).');
+    }
+    const seenIds = new Set();
+    const valid = [];
+    raw.forEach((entry, i) => {
+        const missing = REQUIRED_FIELDS.filter((f) => entry[f] === undefined || entry[f] === null || entry[f] === '');
+        if (missing.length > 0) {
+            console.warn(`[data/files.json] Entrada #${i} omitida: faltan los campos ${missing.join(', ')}.`, entry);
+            return;
+        }
+        if (seenIds.has(entry.id)) {
+            console.warn(`[data/files.json] Entrada #${i} omitida: el id "${entry.id}" está repetido.`);
+            return;
+        }
+        if (entry.chart && !CHART_RENDERERS[entry.chart.kind]) {
+            console.warn(`[data/files.json] "${entry.id}": tipo de gráfico "${entry.chart && entry.chart.kind}" desconocido. Se mostrará como texto sin gráfico.`);
+            entry.chart = null;
+        }
+        seenIds.add(entry.id);
+        valid.push({
+            requiresFloppy: false,
+            chart: null,
+            paragraphs: [],
+            ...entry,
+            chart: resolveChartColors(entry.chart),
+        });
+    });
+    return valid;
+}
+
+async function loadFilesData() {
+    try {
+        const res = await fetch(DATA_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status} al pedir ${DATA_URL}`);
+        const raw = await res.json();
+        FILES = validateAndNormalizeFiles(raw);
+    } catch (err) {
+        console.error('No se pudo cargar data/files.json:', err);
+        dataLoadError = err;
+        FILES = [];
+    }
+}
 
 // ---------- Estado ----------
 
@@ -278,6 +209,17 @@ function enterIndex() {
     document.addEventListener('keydown', handleGlobalKeydown);
 }
 
+function renderDataError(err) {
+    const body = $('file-table-body');
+    body.innerHTML = `
+    <tr><td colspan="5" class="data-error">
+      ⚠ ERROR AL LEER data/files.json — ${(err && err.message) || 'error desconocido'}<br/>
+      Revisa que el archivo tenga JSON válido (sin comas finales, comillas correctas).
+      Si abriste index.html con doble clic, usa un servidor local
+      (por ejemplo <code>python3 -m http.server</code>) en vez de file://.
+    </td></tr>`;
+}
+
 function tickClock() {
     const now = new Date();
     $('clock').textContent = `1998-09-14 ${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
@@ -295,8 +237,16 @@ function tickSession() {
 // ---------- Tabla de índice ----------
 
 function renderFileTable() {
+    if (dataLoadError) {
+        renderDataError(dataLoadError);
+        return;
+    }
     const body = $('file-table-body');
     body.innerHTML = '';
+    if (FILES.length === 0) {
+        body.innerHTML = '<tr><td colspan="5" class="data-error">SIN ARCHIVOS — data/files.json está vacío ([]).</td></tr>';
+        return;
+    }
     FILES.forEach((file, i) => {
         const tr = document.createElement('tr');
         tr.className = 'file-row' + (i === selectedIndex ? ' selected' : '');
@@ -456,6 +406,21 @@ function insertFloppy(fileId) {
 }
 
 // ---------- Gráficos ----------
+//
+// Registro de tipos de gráfico soportados. Para agregar un tipo nuevo
+// (por ejemplo "area" o "radar") en el futuro:
+//   1. Escribe una función drawTuGrafico(ctx, width, height, chart)
+//      que dibuje sobre el canvas usando chart.labels/series o chart.slices.
+//   2. Agrégala aquí abajo con la clave que usarás en el JSON, p.ej.:
+//        area: drawAreaChart,
+//   3. En data/files.json usa "kind": "area" en el objeto chart.
+// No hace falta tocar ninguna otra parte del código.
+
+const CHART_RENDERERS = {
+    bar: drawGroupedBarChart,
+    line: drawMultiLineChart,
+    pie: drawPieChart,
+};
 
 function renderChartBlock(container, chart) {
     const wrap = document.createElement('div');
@@ -488,9 +453,14 @@ function renderChartBlock(container, chart) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, rect.width, rect.height);
 
-        if (chart.kind === 'bar') drawGroupedBarChart(ctx, rect.width, rect.height, chart);
-        else if (chart.kind === 'line') drawMultiLineChart(ctx, rect.width, rect.height, chart);
-        else if (chart.kind === 'pie') drawPieChart(ctx, rect.width, rect.height, chart);
+        const renderer = CHART_RENDERERS[chart.kind];
+        if (renderer) {
+            renderer(ctx, rect.width, rect.height, chart);
+        } else {
+            ctx.fillStyle = COLORS.red;
+            ctx.font = '12px "JetBrains Mono", monospace';
+            ctx.fillText(`TIPO DE GRAFICO NO SOPORTADO: "${chart.kind}"`, 12, 24);
+        }
     }
 
     window.requestAnimationFrame(draw);
@@ -665,8 +635,10 @@ function drawPieChart(ctx, cw, ch, chart) {
 // ---------- Arranque de la aplicación ----------
 
 window.addEventListener('DOMContentLoaded', () => {
+    const dataPromise = loadFilesData();
     setupLogin();
-    runBootSequence(() => {
+    runBootSequence(async () => {
+        await dataPromise; // asegura que data/files.json ya esté leído
         showView('view-login');
         $('user-input').focus();
     });

@@ -203,6 +203,17 @@ body{
 .cls-secret{ color: var(--amber); font-weight: 700; }
 .cls-conf{ color: var(--green); font-weight: 700; }
 
+.data-error{
+  display: block;
+  width: 100%;
+  color: var(--red);
+  border-left: 3px solid var(--red);
+  padding: 14px 16px;
+  line-height: 1.6;
+  background: rgba(255,77,77,0.06);
+}
+.data-error code{ color: var(--amber); }
+
 /* ---------- Vista de documento / grafico ---------- */
 
 #view-doc{ overflow: hidden; }
