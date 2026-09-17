@@ -7,21 +7,32 @@
 // ---------- Credenciales válidas (demo) ----------
 
 const VALID_CREDENTIALS = {
-    ADMIN: 'ULTRA1998',
-    OPERATOR: 'ULTRA1998',
+    NELSON: '187097',
+    ADMIN: 'PROMETEUS',
 };
+
+// Usuarios que ingresan sin contraseña (el campo <PASS> se ignora para ellos).
+const NO_PASSWORD_USERS = ['PROFESOR'];
 
 // ---------- Paletas ----------
 
 const COLORS = {
     green: '#33ff77',
-    greenDim: '#1f7a48',
+    greenDim: '#8f8f89',
     red: '#ff4d4d',
     amber: '#ffb347',
     paleMint: '#b9f5d0',
-    brown: '#c97a2b',
-    text: '#baffd1',
+    brown: '#d99a4e',
+    text: '#f0f0ec',
+    ink: '#f4f4f0',
+    paper: '#05100a',
 };
+
+// Paleta que se asigna automáticamente, en orden, a cualquier serie o
+// porción de gráfico que NO traiga "color" en el JSON. Así para crear un
+// gráfico nuevo alcanza con dar nombres + valores: los colores y el
+// contraste quedan resueltos solos.
+const AUTO_PALETTE = ['green', 'amber', 'red', 'paleMint', 'brown', 'greenDim'];
 
 // ---------- Datos de archivos ----------
 // Los datos ya NO se definen aquí. Se cargan desde data/files.json
@@ -38,21 +49,57 @@ const DATA_URL = 'data/files.json';
 const REQUIRED_FIELDS = ['id', 'filename', 'size', 'date', 'classification'];
 
 // Convierte un color del JSON a un valor CSS válido.
-// Acepta nombres de la paleta ("green", "amber", ...) o un hex directo ("#ff00ff").
-function resolveColor(value) {
-    if (typeof value !== 'string') return COLORS.green;
-    if (value.startsWith('#')) return value;
-    return COLORS[value] || COLORS.green;
+// Acepta nombres de la paleta ("green", "amber", ...), un hex directo
+// ("#ff00ff"), o directamente nada: si no se especifica, se asigna
+// automáticamente un color de AUTO_PALETTE según su posición (index).
+function resolveColor(value, index) {
+    if (typeof value === 'string') {
+        if (value.startsWith('#')) return value;
+        if (COLORS[value]) return COLORS[value];
+    }
+    const auto = AUTO_PALETTE[index % AUTO_PALETTE.length];
+    return COLORS[auto];
+}
+
+// Redondea un número al siguiente "número lindo" (1/2/5 × 10^n) para que
+// los ejes se vean prolijos aunque nadie haya definido yMax/yStep a mano.
+function niceCeil(value) {
+    if (value <= 0) return 10;
+    const exp = Math.floor(Math.log10(value));
+    const base = value / Math.pow(10, exp);
+    let niceBase;
+    if (base <= 1) niceBase = 1;
+    else if (base <= 2) niceBase = 2;
+    else if (base <= 5) niceBase = 5;
+    else niceBase = 10;
+    return niceBase * Math.pow(10, exp);
+}
+
+// Si el gráfico no trae yMax/yStep, se calculan solos a partir de los
+// valores reales — así, para agregar un gráfico nuevo al JSON, alcanza
+// con dar "labels" + "series" (o "slices" para torta): nada de calcular
+// escalas a mano.
+function autoScaleChart(chart) {
+    if (!chart || chart.kind === 'pie') return chart;
+    if (chart.yMax && chart.yStep) return chart;
+    const allValues = (chart.series || []).flatMap((s) => s.values || []);
+    const maxVal = Math.max(1, ...allValues);
+    const yMax = chart.yMax || niceCeil(maxVal * 1.15);
+    const yStep = chart.yStep || yMax / 4;
+    chart.yMax = yMax;
+    chart.yStep = yStep;
+    return chart;
 }
 
 function resolveChartColors(chart) {
     if (!chart) return chart;
     if (Array.isArray(chart.series)) {
-        chart.series.forEach((s) => { s.color = resolveColor(s.color); });
+        chart.series.forEach((s, i) => { s.color = resolveColor(s.color, i); });
     }
     if (Array.isArray(chart.slices)) {
-        chart.slices.forEach((s) => { s.color = resolveColor(s.color); });
+        chart.slices.forEach((s, i) => { s.color = resolveColor(s.color, i); });
     }
+    autoScaleChart(chart);
     return chart;
 }
 
@@ -187,7 +234,10 @@ function setupLogin() {
         const user = $('user-input').value.trim().toUpperCase();
         const pass = $('pass-input').value;
 
-        if (VALID_CREDENTIALS[user] && VALID_CREDENTIALS[user] === pass) {
+        const isNoPasswordUser = NO_PASSWORD_USERS.includes(user);
+        const isValid = isNoPasswordUser || (VALID_CREDENTIALS[user] && VALID_CREDENTIALS[user] === pass);
+
+        if (isValid) {
             currentUser = user;
             errorEl.textContent = '';
             enterIndex();
@@ -222,7 +272,7 @@ function renderDataError(err) {
 
 function tickClock() {
     const now = new Date();
-    $('clock').textContent = `1998-09-14 ${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+    $('clock').textContent = `2027-11-30 ${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
 }
 
 function tickSession() {
@@ -426,9 +476,21 @@ function renderChartBlock(container, chart) {
     const wrap = document.createElement('div');
     wrap.className = 'chart-wrap';
 
+    if (chart.kind === 'pie') {
+        const total = chart.slices.reduce((a, s) => a + s.value, 0);
+        const caption = document.createElement('div');
+        caption.className = 'chart-caption';
+        caption.textContent = `TOTAL: ${total}`;
+        wrap.appendChild(caption);
+    }
+
     const canvas = document.createElement('canvas');
     canvas.className = 'chart-canvas-el';
     wrap.appendChild(canvas);
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'chart-tooltip';
+    wrap.appendChild(tooltip);
 
     const legend = document.createElement('div');
     legend.className = 'chart-legend';
@@ -444,7 +506,12 @@ function renderChartBlock(container, chart) {
 
     container.appendChild(wrap);
 
-    function draw() {
+    // hitRegions guarda, después de cada dibujo, los rectángulos/círculos
+    // "sensibles" del gráfico para poder mostrar un tooltip exacto al pasar
+    // el mouse — así los gráficos dan más detalle sin ensuciar el dibujo.
+    let hitRegions = [];
+
+    function draw(hoverIndex) {
         const rect = canvas.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
         canvas.width = Math.max(1, Math.floor(rect.width * dpr));
@@ -455,23 +522,53 @@ function renderChartBlock(container, chart) {
 
         const renderer = CHART_RENDERERS[chart.kind];
         if (renderer) {
-            renderer(ctx, rect.width, rect.height, chart);
+            hitRegions = renderer(ctx, rect.width, rect.height, chart, hoverIndex) || [];
         } else {
             ctx.fillStyle = COLORS.red;
             ctx.font = '12px "JetBrains Mono", monospace';
             ctx.fillText(`TIPO DE GRAFICO NO SOPORTADO: "${chart.kind}"`, 12, 24);
+            hitRegions = [];
         }
     }
 
-    window.requestAnimationFrame(draw);
-    resizeHandler = () => window.requestAnimationFrame(draw);
+    canvas.addEventListener('mousemove', (ev) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = ev.clientX - rect.left;
+        const my = ev.clientY - rect.top;
+        const hit = hitRegions.find((r) => {
+            if (r.type === 'rect') return mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h;
+            if (r.type === 'circle') return Math.hypot(mx - r.x, my - r.y) <= r.r;
+            return false;
+        });
+        if (hit) {
+            tooltip.textContent = hit.label;
+            tooltip.style.left = `${hit.tx !== undefined ? hit.tx : mx}px`;
+            tooltip.style.top = `${(hit.ty !== undefined ? hit.ty : my) - 8}px`;
+            tooltip.classList.add('visible');
+            canvas.style.cursor = 'pointer';
+        } else {
+            tooltip.classList.remove('visible');
+            canvas.style.cursor = 'crosshair';
+        }
+
+        if (chart.kind === 'line') {
+            window.requestAnimationFrame(() => draw(hit ? hit.idx : null));
+        }
+    });
+    canvas.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+        if (chart.kind === 'line') window.requestAnimationFrame(() => draw(null));
+    });
+
+    window.requestAnimationFrame(() => draw(null));
+    resizeHandler = () => window.requestAnimationFrame(() => draw(null));
     window.addEventListener('resize', resizeHandler);
 }
 
 function drawAxes(ctx, pad, w, h, yMax, yStep) {
     ctx.font = '11px "JetBrains Mono", monospace';
     ctx.fillStyle = COLORS.greenDim;
-    ctx.strokeStyle = 'rgba(31,122,72,0.5)';
+    ctx.strokeStyle = 'rgba(143,143,137,0.35)';
     ctx.setLineDash([2, 4]);
     ctx.lineWidth = 1;
 
@@ -506,6 +603,8 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
     const seriesCount = chart.series.length;
     const barGap = 4;
     const barW = (groupSlot * 0.68) / seriesCount;
+    const hitRegions = [];
+    const showValueLabels = barW >= 22; // evita amontonar números si hay muchas barras finas
 
     chart.labels.forEach((label, gi) => {
         const groupX = pad.left + groupSlot * gi + groupSlot * 0.16;
@@ -520,29 +619,47 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
             ctx.shadowBlur = 6;
             ctx.fillRect(x, y, barW, barH);
             ctx.shadowBlur = 0;
+
+            if (showValueLabels) {
+                ctx.fillStyle = COLORS.ink;
+                ctx.font = '10px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(String(val), x + barW / 2, y - 5);
+            }
+
+            hitRegions.push({
+                type: 'rect', x, y, w: barW, h: barH,
+                tx: x + barW / 2, ty: y,
+                label: `${s.name} · ${label}\n${val}`,
+            });
         });
 
-        ctx.fillStyle = COLORS.green;
+        ctx.fillStyle = COLORS.text;
         ctx.font = '11px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
         ctx.fillText(label, groupX + (groupSlot * 0.68) / 2, pad.top + h + 18);
     });
     ctx.textAlign = 'left';
+    return hitRegions;
 }
 
-function drawMultiLineChart(ctx, cw, ch, chart) {
+function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
     const pad = { top: 16, right: 20, bottom: 30, left: 40 };
     const w = cw - pad.left - pad.right;
     const h = ch - pad.top - pad.bottom;
     const n = chart.labels.length;
+    const xAt = (i) => pad.left + (w / (n - 1)) * i;
 
     drawAxes(ctx, pad, w, h, chart.yMax, chart.yStep);
 
-    chart.series.forEach((s) => {
-        const points = s.values.map((val, i) => ({
-            x: pad.left + (w / (n - 1)) * i,
-            y: pad.top + h - (val / chart.yMax) * h,
-        }));
+    const allPoints = chart.series.map((s) => s.values.map((val, i) => ({
+        x: xAt(i),
+        y: pad.top + h - (val / chart.yMax) * h,
+        val,
+    })));
+
+    chart.series.forEach((s, si) => {
+        const points = allPoints[si];
 
         ctx.beginPath();
         ctx.strokeStyle = s.color;
@@ -569,33 +686,92 @@ function drawMultiLineChart(ctx, cw, ch, chart) {
         });
     });
 
+    // Valor final de cada serie, impreso al lado del último punto:
+    // da una lectura rápida sin necesidad de pasar el mouse.
+    chart.series.forEach((s) => {
+        const lastVal = s.values[s.values.length - 1];
+        const x = pad.left + w;
+        const y = pad.top + h - (lastVal / chart.yMax) * h;
+        ctx.fillStyle = s.color;
+        ctx.font = 'bold 10px "JetBrains Mono", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(String(lastVal), x - 2, y - 7);
+    });
+
     ctx.fillStyle = COLORS.greenDim;
     ctx.font = '10px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     chart.labels.forEach((label, i) => {
         if (n > 12 && i % 2 !== 0) return;
-        const x = pad.left + (w / (n - 1)) * i;
+        const x = xAt(i);
         ctx.fillText(label, x, pad.top + h + 16);
     });
     ctx.textAlign = 'left';
+
+    // Al pasar el mouse por una fecha, se resaltan las 3 series a la vez
+    // (línea guía vertical + anillo en cada punto de ese instante), y el
+    // tooltip muestra el valor de cada una juntas, no una por una.
+    if (hoverIndex !== null && hoverIndex !== undefined) {
+        const hx = xAt(hoverIndex);
+        ctx.beginPath();
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = 'rgba(244,244,240,0.4)';
+        ctx.lineWidth = 1;
+        ctx.moveTo(hx, pad.top);
+        ctx.lineTo(hx, pad.top + h);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        chart.series.forEach((s, si) => {
+            const p = allPoints[si][hoverIndex];
+            ctx.beginPath();
+            ctx.strokeStyle = s.color;
+            ctx.fillStyle = COLORS.paper;
+            ctx.lineWidth = 2;
+            ctx.shadowColor = s.color;
+            ctx.shadowBlur = 10;
+            ctx.arc(p.x, p.y, 5.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        });
+    }
+
+    // Una banda vertical por fecha (no un punto por serie): así al pasar
+    // el mouse sobre cualquier parte de esa columna aparecen las 3 series
+    // de ese instante juntas en el tooltip.
+    const bandW = n > 1 ? w / (n - 1) : w;
+    return chart.labels.map((label, i) => ({
+        type: 'rect',
+        x: xAt(i) - bandW / 2,
+        y: pad.top,
+        w: bandW,
+        h,
+        tx: xAt(i),
+        ty: pad.top,
+        idx: i,
+        label: `${label}\n` + chart.series.map((s) => `${s.name}: ${s.values[i]}`).join('\n'),
+    }));
 }
 
 function drawPieChart(ctx, cw, ch, chart) {
     const cx = cw / 2;
     const cy = ch / 2;
-    const r = Math.max(10, Math.min(cw, ch) / 2 - 24);
+    const outerR = Math.max(10, Math.min(cw, ch) / 2 - 24);
+    const innerR = outerR * 0.55; // agujero de la dona
     const total = chart.slices.reduce((a, s) => a + s.value, 0);
 
     ctx.save();
     ctx.shadowColor = COLORS.green;
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 16;
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(51,255,119,0.5)';
+    ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(51,255,119,0.4)';
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.restore();
 
+    const hitRegions = [];
     let startAngle = -Math.PI / 2;
     chart.slices.forEach((slice) => {
         const angle = (slice.value / total) * Math.PI * 2;
@@ -603,33 +779,47 @@ function drawPieChart(ctx, cw, ch, chart) {
         const midAngle = startAngle + angle / 2;
 
         ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, r, startAngle, endAngle);
+        ctx.arc(cx, cy, outerR, startAngle, endAngle);
+        ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
         ctx.closePath();
         ctx.fillStyle = slice.color;
         ctx.fill();
 
-        ctx.strokeStyle = '#03110a';
+        ctx.strokeStyle = COLORS.paper;
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, r, startAngle, endAngle);
-        ctx.closePath();
         ctx.stroke();
 
-        const labelR = r * 0.62;
+        const labelR = (outerR + innerR) / 2;
         const lx = cx + Math.cos(midAngle) * labelR;
         const ly = cy + Math.sin(midAngle) * labelR;
-        ctx.fillStyle = '#03110a';
+        ctx.fillStyle = COLORS.paper;
         ctx.font = 'bold 12px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(`${slice.value}%`, lx, ly);
 
+        // Región sensible: un círculo centrado sobre la porción, para
+        // mostrar el detalle exacto (etiqueta + valor real) al pasar el mouse.
+        hitRegions.push({
+            type: 'circle', x: lx, y: ly, r: Math.max(16, angle * labelR * 0.4),
+            tx: lx, ty: ly,
+            label: `${slice.label}\n${slice.value} de ${total} (${Math.round((slice.value / total) * 100)}%)`,
+        });
+
         startAngle = endAngle;
     });
+
+    // Anillo interior de la dona (borde del agujero), en vez de un total
+    // pegado al centro — queda más limpio y más "dona".
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(244,244,240,0.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
+    return hitRegions;
 }
 
 // ---------- Arranque de la aplicación ----------

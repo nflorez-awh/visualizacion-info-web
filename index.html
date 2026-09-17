@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SECURE VAULT — CLASSIFIED FILE INDEX</title>
+
+    <link rel="icon" href="./favicon.svg">
+    <title>PROYECTO PROMETEO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=VT323&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,18 +21,19 @@
 <!-- LOGIN -->
 <section id="view-login" class="view">
     <div class="login-box">
-        <p class="login-title">SECURE VAULT</p>
-        <p class="login-sub">AUTENTICACION REQUERIDA — NIVEL ULTRA</p>
+        <p class="login-title">PROMETEUS</p>
+        <p class="login-sub">AUTENTICACION REQUERIDA</p>
         <form id="login-form" autocomplete="off">
             <div class="field-row">
-                <label for="user-input">USER&gt;</label>
+                <label for="user-input">&lt;USER&gt;</label>
                 <input id="user-input" type="text" spellcheck="false" autocomplete="off" />
             </div>
             <div class="field-row">
-                <label for="pass-input">PASS&gt;</label>
+                <label for="pass-input">&lt;PASS&gt;</label>
                 <input id="pass-input" type="password" spellcheck="false" autocomplete="off" />
             </div>
-            <button type="submit" class="term-btn">CONECTAR</button>
+            <p class="field-hint">USUARIO "PROFESOR" — SIN CONTRASEÑA</p>
+            <button type="submit" class="term-btn">INGRESAR</button>
             <p id="login-error" class="login-error" aria-live="polite"></p>
         </form>
     </div>
