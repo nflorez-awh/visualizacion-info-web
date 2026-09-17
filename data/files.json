@@ -8,7 +8,7 @@
     "requiresFloppy": false,
     "chart": null,
     "paragraphs": [
-      "Redacto este informe como responsable de campo de PROYECTO PROMETEO, en aquel momento adscrito a la Universidad de Tohoku. Debo dejar constancia, aunque me cueste, de que once días antes del incidente de Shibuya ya habíamos perdido la trazabilidad de una de nuestras muestras experimentales. En su momento lo achacamos a un error de inventario. Hoy sé que no lo fue.",
+      "Redacto este informe como responsable de campo de PROYECTO PROMETEO, en aquel momento adscrito a la Universidad Takayama. Debo dejar constancia, aunque me cueste, de que once días antes del incidente de Shibuya ya habíamos perdido la trazabilidad de una de nuestras muestras experimentales. En su momento lo achacamos a un error de inventario. Hoy sé que no lo fue.",
       "El primer caso público y confirmado corresponde a un varón no identificado, de piel con un tono grisáceo pronunciado y ropa desgarrada por laceraciones autoinfligidas en los antebrazos, observado caminando de forma irregular entre la multitud de Shibuya durante la tarde.",
       "Un oficial de policía que se acercó a ofrecerle ayuda fue atacado y devorado en cuestión de segundos, sin oportunidad de pedir refuerzos. Al menos tres transeúntes grabaron el incidente con videocámaras caseras antes de que los servicios de emergencia lograran acordonar la zona.",
       "Lo más inquietante no es el ataque en sí, sino la sincronía: en las horas siguientes se reportaron incidentes prácticamente idénticos en Tokio, Osaka y Kioto, sin conexión aparente entre las víctimas ni los agresores. Esto descarta cualquier hipótesis de contagio físico de propagación estrictamente lineal, y encaja, para mi vergüenza, con los patrones de dispersión que habíamos modelado en el laboratorio meses atrás sin llegar jamás a probarlos fuera de una cámara sellada."
@@ -37,6 +37,7 @@
     "requiresFloppy": false,
     "chart": {
       "kind": "bar",
+      "unit": "M",
       "title": "POBLACION DEMOGRAFICA RESPECTO AL TIEMPO",
       "subtitle": "Millones de habitantes / Estimacion sobre el brote inicial / Cada 2 meses aprox.",
       "labels": [
@@ -51,7 +52,7 @@
           "name": "DIA 0",
           "color": "paleMint",
           "values": [
-            122,
+            121.7,
             0,
             0,
             0,
@@ -63,10 +64,21 @@
           "color": "green",
           "values": [
             72,
-            4,
+            5,
             20,
-            24,
-            2
+            24.2,
+            0.5
+          ]
+        },
+        {
+          "name": "MES 3",
+          "color": "greenDim",
+          "values": [
+            32,
+            8,
+            45,
+            33.2,
+            3
           ]
         },
         {
@@ -76,7 +88,7 @@
             13,
             9,
             65,
-            31,
+            31.7,
             3
           ]
         },
@@ -84,10 +96,10 @@
           "name": "MES 7",
           "color": "brown",
           "values": [
-            6,
-            9,
+            6.5,
+            9.5,
             77,
-            26,
+            25.7,
             3
           ]
         },
@@ -95,11 +107,11 @@
           "name": "MES 9",
           "color": "red",
           "values": [
-            3,
+            3.5,
             10,
             82,
-            23,
-            3
+            23.2,
+            3.5
           ]
         }
       ]
@@ -115,6 +127,7 @@
     "requiresFloppy": false,
     "chart": {
       "kind": "line",
+      "unit": "M",
       "title": "EVOLUCION DE LA POBLACION — SERIE COMPLETA",
       "subtitle": "Millones de habitantes / Seguimiento continuo desde el brote inicial",
       "labels": [
@@ -130,12 +143,12 @@
           "name": "SUPERVIVIENTES",
           "color": "green",
           "values": [
-            122,
+            121.7,
             72,
             32,
             13,
-            7,
-            3
+            6.5,
+            3.5
           ]
         },
         {
@@ -144,7 +157,7 @@
           "values": [
             0,
             20,
-            40,
+            45,
             65,
             77,
             82
@@ -155,11 +168,11 @@
           "color": "brown",
           "values": [
             0,
-            20,
-            28,
-            31,
-            26,
-            23
+            24.2,
+            33.2,
+            31.7,
+            25.7,
+            23.2
           ]
         },
         {
@@ -170,7 +183,7 @@
             5,
             8,
             9,
-            9,
+            9.5,
             10
           ]
         },
@@ -179,11 +192,11 @@
           "color": "paleMint",
           "values": [
             0,
-            2,
+            0.5,
             3,
             3,
             3,
-            3
+            3.5
           ]
         }
       ]
@@ -309,8 +322,13 @@
     "chart": {
       "kind": "pie",
       "title": "CAUSA DE MUERTE MAS COMUN ENTRE SUPERVIVIENTES",
-      "subtitle": "Relevamiento parcial — registros incompletos por corte de comunicaciones",
+      "subtitle": "Registro consolidado del equipo de campo / última actualización antes del corte total de comunicaciones",
       "slices": [
+        {
+          "label": "INFECCION / MORDEDURAS",
+          "value": 38.7,
+          "color": "#6e1423"
+        },
         {
           "label": "ATAQUES DE INFECTADOS",
           "value": 21.5,
@@ -337,14 +355,14 @@
           "color": "greenDim"
         },
         {
+          "label": "OTRO",
+          "value": 2.3,
+          "color": "#4a4a46"
+        },
+        {
           "label": "SUICIDIOS",
           "value": 2.2,
           "color": "green"
-        },
-        {
-          "label": "SIN REGISTRO / DATOS PERDIDOS",
-          "value": 38.7,
-          "color": "#4a4a46"
         }
       ]
     },
@@ -360,7 +378,7 @@
     "chart": {
       "kind": "line",
       "title": "CANTIDAD DE SUPERVIVIENTES EN LA UNIVERSIDAD",
-      "subtitle": "Grupo principal — Facultad de Arte y Diseño, Universidad de Tohoku",
+      "subtitle": "Grupo principal — Facultad de Arte y Diseño, Universidad Takayama",
       "labels": [
         "MES 0",
         "MES 2",
@@ -439,20 +457,20 @@
     "paragraphs": [
       "Clasificación de zonas según nuestros propios relevamientos y los últimos boletines oficiales recibidos antes del corte de comunicaciones. Tres categorías: brote confirmado, refugio activo, y zonas seguras o aptas para investigación.",
       "BROTE CONFIRMADO: entorno de Tokio/Yokohama, prefectura de Aichi y prefectura de Fukuoka. Actividad hostil constante; desplazamiento no recomendado bajo ninguna circunstancia.",
-      "REFUGIO ACTIVO: Sendai, campus de la Universidad de Tohoku — ubicación de este archivo, y no por casualidad: aquí funcionaba el laboratorio original de Prometeo, con equipo de bioseguridad que ninguna otra facultad de la región llegó a tener.",
+      "REFUGIO ACTIVO: Sendai, campus de la Universidad Takayama — ubicación de este archivo, y no por casualidad: aquí funcionaba el laboratorio original de Prometeo, con equipo de bioseguridad que ninguna otra facultad de la región llegó a tener.",
       "ZONAS SEGURAS / POTENCIAL DE INVESTIGACION: prefectura de Hokkaido y prefectura de Okinawa, ambas con actividad mínima reportada hasta la fecha de este registro. Anoto, sin poder confirmarlo del todo, que ambas regiones coinciden con los puntos más alejados de nuestra red original de muestreo, lo cual podría no ser casualidad."
     ]
   },
   {
     "id": "F013",
-    "filename": "REGISTRO_SUPERVIVIENTES_TOHOKU.DAT",
+    "filename": "REGISTRO_SUPERVIVIENTES_TAKAYAMA.DAT",
     "size": 10240,
     "date": "11-02-96",
     "classification": "TOP SECRET",
     "requiresFloppy": true,
     "chart": null,
     "paragraphs": [
-      "Registro de los siete ocupantes que adoptaron la Facultad de Arte y Diseño de la Universidad de Tohoku como refugio permanente, nueve meses después del brote inicial. Se eligió ese edificio por su diseño irregular y su difícil acceso, cualidades que en cualquier otro contexto habrían sido defectos de planeamiento. Ninguno de ellos sabe todavía que el laboratorio donde empezó todo esto queda a menos de cuatrocientos metros de donde duermen.",
+      "Registro de los siete ocupantes que adoptaron la Facultad de Arte y Diseño de la Universidad Takayama como refugio permanente, nueve meses después del brote inicial. Se eligió ese edificio por su diseño irregular y su difícil acceso, cualidades que en cualquier otro contexto habrían sido defectos de planeamiento. Ninguno de ellos sabe todavía que el laboratorio donde empezó todo esto queda a menos de cuatrocientos metros de donde duermen.",
       "MEI — estudiante de intercambio proveniente de China, formación en Arquitectura. YUE — Antropología. KAZUTO — Derecho. ARISU — Ingeniería Mecánica. KAEDE — Medicina. SHIN — perfil deportivo, sin formación académica declarada. TAKUMI — Ingeniería de Sistemas, responsable de mantener operativos los generadores y el resto de la infraestructura del campus.",
       "Nota de seguimiento: ARISU presenta resultado positivo al virus PROMETEO, pero exhibe rasgos de inmunidad parcial no documentados previamente en ningún otro caso registrado por este equipo. Es, hasta donde yo sé, la primera evidencia real de que el cuerpo humano puede convivir con esta cepa sin sucumbir del todo a ella. No he encontrado la forma de replicar esa inmunidad en ningún otro sujeto, y no es por falta de intentos. Su condición exige monitoreo continuo y discreción absoluta frente al resto del grupo."
     ]
@@ -498,10 +516,10 @@
     "chart": null,
     "paragraphs": [
       "Recuperé este hilo de correos internos del servidor del departamento antes de perder el acceso a la red del campus. Lo dejo tal como lo encontré, sin editar, porque documenta mejor que cualquier informe posterior el momento exacto en que empezamos a ignorar las señales.",
-      "De: t.owada@bio.tohoku-u.ac.jp\nPara: laboratorio-prometeo@tohoku-u.ac.jp\nFecha: 01/19/96\nAsunto: Sujeto 4 — comportamiento fuera de protocolo\n\nEl sujeto 4 rompió la sedación programada por tercera vez esta semana. No es solo resistencia a la dosis, es como si el compuesto acelerara el metabolismo en lugar de frenarlo. ¿Alguien más está viendo esto o solo yo estoy perdiendo la cabeza?",
-      "De: profesor@bio.tohoku-u.ac.jp\nPara: t.owada@bio.tohoku-u.ac.jp\nFecha: 01/19/96\nAsunto: RE: Sujeto 4 — comportamiento fuera de protocolo\n\nLo estoy viendo. Subí la dosis un veinte por ciento y documentalo todo, pero no lo reportes todavía al comité. Si esto sale del laboratorio antes de que entendamos qué está pasando, nos cierran el proyecto entero.",
-      "De: r.mizuno@bio.tohoku-u.ac.jp\nPara: laboratorio-prometeo@tohoku-u.ac.jp\nFecha: 01/27/96\nAsunto: Fuga menor — contenida\n\nConfirmo que el sujeto 4 forzó el cierre de la jaula B esta madrugada. Lo recuperamos en menos de una hora, sin incidentes, pero dejo constancia formal de mi objeción: no deberíamos seguir escalando la dosis experimental sin informar a bioseguridad. Esto ya no es un problema de comportamiento animal.",
-      "De: profesor@bio.tohoku-u.ac.jp\nPara: r.mizuno@bio.tohoku-u.ac.jp\nFecha: 01/31/96\nAsunto: RE: Fuga menor — contenida\n\nTu objeción queda registrada. Lo hablamos el lunes en persona, no por correo. Necesito que esto quede fuera del sistema hasta entonces.\n\n(Nota posterior: el lunes al que se refiere este correo era el 2 de febrero. Nunca llegamos a tener esa conversación.)"
+      "De: t.owada@bio.takayama-u.ac.jp\nPara: laboratorio-prometeo@takayama-u.ac.jp\nFecha: 01/19/96\nAsunto: Sujeto 4 — comportamiento fuera de protocolo\n\nEl sujeto 4 rompió la sedación programada por tercera vez esta semana. No es solo resistencia a la dosis, es como si el compuesto acelerara el metabolismo en lugar de frenarlo. ¿Alguien más está viendo esto o solo yo estoy perdiendo la cabeza?",
+      "De: profesor@bio.takayama-u.ac.jp\nPara: t.owada@bio.takayama-u.ac.jp\nFecha: 01/19/96\nAsunto: RE: Sujeto 4 — comportamiento fuera de protocolo\n\nLo estoy viendo. Subí la dosis un veinte por ciento y documentalo todo, pero no lo reportes todavía al comité. Si esto sale del laboratorio antes de que entendamos qué está pasando, nos cierran el proyecto entero.",
+      "De: r.mizuno@bio.takayama-u.ac.jp\nPara: laboratorio-prometeo@takayama-u.ac.jp\nFecha: 01/27/96\nAsunto: Fuga menor — contenida\n\nConfirmo que el sujeto 4 forzó el cierre de la jaula B esta madrugada. Lo recuperamos en menos de una hora, sin incidentes, pero dejo constancia formal de mi objeción: no deberíamos seguir escalando la dosis experimental sin informar a bioseguridad. Esto ya no es un problema de comportamiento animal.",
+      "De: profesor@bio.takayama-u.ac.jp\nPara: r.mizuno@bio.takayama-u.ac.jp\nFecha: 01/31/96\nAsunto: RE: Fuga menor — contenida\n\nTu objeción queda registrada. Lo hablamos el lunes en persona, no por correo. Necesito que esto quede fuera del sistema hasta entonces.\n\n(Nota posterior: el lunes al que se refiere este correo era el 2 de febrero. Nunca llegamos a tener esa conversación.)"
     ]
   },
   {
@@ -527,7 +545,7 @@
     "requiresFloppy": false,
     "chart": null,
     "paragraphs": [
-      "Si están leyendo esto, significa que llegaron a la facultad de ingeniería y encontraron el generador funcionando. Bien. Eso significa que van a tener, al menos, luz y agua limpia durante un tiempo. Fui uno de los responsables del proyecto que se desarrollaba en este campus antes de todo esto. En otro momento me habría tomado la molestia de explicarles quién soy con más calma. No tengo ese lujo ahora.",
+      "Si están leyendo esto, significa que llegaron a la facultad de arte y diseño y encontraron el generador funcionando. Bien. Eso significa que van a tener, al menos, luz y agua limpia durante un tiempo. Fui uno de los responsables del proyecto que se desarrollaba en este campus antes de todo esto. En otro momento me habría tomado la molestia de explicarles quién soy con más calma. No tengo ese lujo ahora.",
       "Estoy en el edificio principal de investigación, a poco menos de un kilómetro de donde están ustedes. No puedo cruzar. La zona entre ambos edificios lleva semanas con actividad constante y no tengo forma segura de llegar hasta allá, ni ustedes deberían intentarlo bajo ninguna circunstancia. Configuré el acceso a los archivos de nuestro equipo en la terminal principal de la facultad antes de que se cortara por completo el paso entre ambos edificios; ahí van a encontrar, más adelante, el resto de lo que sé. Les dejo también las llaves del depósito de suministros, el mapa del campus y las indicaciones básicas de los generadores, que alguno de ustedes con formación en sistemas debería poder operar sin demasiado problema.",
       "Me quedan pocas provisiones y ya no tengo forma de reabastecerme. No voy a fingir que esto tiene un final distinto al que ya imaginan. Solo les pido una cosa: si en algún momento encuentran el resto de mis archivos, léanlos con la mente abierta antes de odiarme. No los va a hacer sentir mejor, pero al menos van a entender por qué terminaron aquí, y por qué este lugar, de todos los lugares posibles, terminó siendo el único que quedaba en pie."
     ]
@@ -561,5 +579,54 @@
       "Nuestro propio caso documentado, ya registrado por separado en este archivo, presenta el mismo patrón: exposición confirmada, progresión detenida en algún punto intermedio, sin explicación clara. Intentamos extraer y analizar muestras de sangre para aislar lo que sea que esté interrumpiendo el proceso, pero cada intento de replicarlo en otro sujeto fracasó sin excepción.",
       "No sé si esto es una cura, una inmunidad parcial, una mutación distinta disfrazada de suerte, o simplemente el virus tomándose su tiempo con algunas personas antes de terminar el trabajo. Lo dejo registrado porque es lo más parecido a una esperanza que tengo para ofrecer, y porque prefiero que quede escrito el desconocimiento real, en lugar de una promesa que no puedo cumplir."
     ]
+  },
+  {
+    "id": "F021",
+    "filename": "SUPERVIVIENTES_INFECTADOS.RPT",
+    "size": 9984,
+    "date": "11-15-96",
+    "classification": "TOP SECRET",
+    "requiresFloppy": false,
+    "chart": {
+      "kind": "line",
+      "unit": "M",
+      "title": "SUPERVIVIENTES Y INFECTADOS",
+      "subtitle": "Millones de habitantes / Comparativa directa desde el brote inicial",
+      "labels": [
+        "DIA 0",
+        "MES 1",
+        "MES 3",
+        "MES 5",
+        "MES 7",
+        "MES 9"
+      ],
+      "series": [
+        {
+          "name": "SUPERVIVIENTES",
+          "color": "green",
+          "values": [
+            121.7,
+            72,
+            32,
+            13,
+            6.5,
+            3.5
+          ]
+        },
+        {
+          "name": "INFECTADOS",
+          "color": "red",
+          "values": [
+            0,
+            20,
+            45,
+            65,
+            77,
+            82
+          ]
+        }
+      ]
+    },
+    "paragraphs": []
   }
 ]

@@ -359,8 +359,7 @@ function logOut() {
     sessionStartTime = null;
     currentUser = '';
     $('user-input').value = '';
-    $('pass-input').value = '';
-    $('login-error').textContent = '';
+    $('pass-input').value = '';$('login-error').textContent = '';
     showView('view-login');
     $('user-input').focus();
 }
@@ -456,15 +455,6 @@ function insertFloppy(fileId) {
 }
 
 // ---------- Gráficos ----------
-//
-// Registro de tipos de gráfico soportados. Para agregar un tipo nuevo
-// (por ejemplo "area" o "radar") en el futuro:
-//   1. Escribe una función drawTuGrafico(ctx, width, height, chart)
-//      que dibuje sobre el canvas usando chart.labels/series o chart.slices.
-//   2. Agrégala aquí abajo con la clave que usarás en el JSON, p.ej.:
-//        area: drawAreaChart,
-//   3. En data/files.json usa "kind": "area" en el objeto chart.
-// No hace falta tocar ninguna otra parte del código.
 
 const CHART_RENDERERS = {
     bar: drawGroupedBarChart,
@@ -476,13 +466,15 @@ function renderChartBlock(container, chart) {
     const wrap = document.createElement('div');
     wrap.className = 'chart-wrap';
 
-    if (chart.kind === 'pie') {
-        const total = chart.slices.reduce((a, s) => a + s.value, 0);
-        const caption = document.createElement('div');
-        caption.className = 'chart-caption';
-        caption.textContent = `TOTAL: ${total}`;
-        wrap.appendChild(caption);
-    }
+if (chart.kind === 'pie') {
+    const rawTotal = chart.slices.reduce((a, s) => a + s.value, 0);
+    // Usamos Number(rawTotal.toFixed(2)) o Math.round(rawTotal) para evitar imprecisiones de flotantes
+    const total = Number(rawTotal.toFixed(2));
+    const caption = document.createElement('div');
+    caption.className = 'chart-caption';
+    caption.textContent = `TOTAL: ${total}`;
+    wrap.appendChild(caption);
+}
 
     const canvas = document.createElement('canvas');
     canvas.className = 'chart-canvas-el';
@@ -506,9 +498,6 @@ function renderChartBlock(container, chart) {
 
     container.appendChild(wrap);
 
-    // hitRegions guarda, después de cada dibujo, los rectángulos/círculos
-    // "sensibles" del gráfico para poder mostrar un tooltip exacto al pasar
-    // el mouse — así los gráficos dan más detalle sin ensuciar el dibujo.
     let hitRegions = [];
 
     function draw(hoverIndex) {
@@ -572,6 +561,8 @@ function drawAxes(ctx, pad, w, h, yMax, yStep) {
     ctx.setLineDash([2, 4]);
     ctx.lineWidth = 1;
 
+    ctx.textAlign = 'right';
+
     const steps = yMax / yStep;
     for (let i = 0; i <= steps; i++) {
         const y = pad.top + h - (h / steps) * i;
@@ -579,9 +570,11 @@ function drawAxes(ctx, pad, w, h, yMax, yStep) {
         ctx.moveTo(pad.left, y);
         ctx.lineTo(pad.left + w, y);
         ctx.stroke();
-        ctx.fillText(String(Math.round(yStep * i)), 4, y + 4);
+
+        ctx.fillText(String(Math.round(yStep * i)), pad.left - 6, y + 4);
     }
     ctx.setLineDash([]);
+    ctx.textAlign = 'left';
 
     ctx.strokeStyle = COLORS.greenDim;
     ctx.beginPath();
@@ -595,6 +588,7 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
     const pad = { top: 16, right: 20, bottom: 30, left: 44 };
     const w = cw - pad.left - pad.right;
     const h = ch - pad.top - pad.bottom;
+    const unitStr = chart.unit ? ` ${chart.unit}` : '';
 
     drawAxes(ctx, pad, w, h, chart.yMax, chart.yStep);
 
@@ -604,7 +598,7 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
     const barGap = 4;
     const barW = (groupSlot * 0.68) / seriesCount;
     const hitRegions = [];
-    const showValueLabels = barW >= 22; // evita amontonar números si hay muchas barras finas
+    const showValueLabels = barW >= 22;
 
     chart.labels.forEach((label, gi) => {
         const groupX = pad.left + groupSlot * gi + groupSlot * 0.16;
@@ -630,7 +624,7 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
             hitRegions.push({
                 type: 'rect', x, y, w: barW, h: barH,
                 tx: x + barW / 2, ty: y,
-                label: `${s.name} · ${label}\n${val}`,
+                label: `${s.name} · ${label}\n${val}${unitStr}`,
             });
         });
 
@@ -644,11 +638,12 @@ function drawGroupedBarChart(ctx, cw, ch, chart) {
 }
 
 function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
-    const pad = { top: 16, right: 20, bottom: 30, left: 40 };
+    const pad = { top: 16, right: 20, bottom: 30, left: 44 };
     const w = cw - pad.left - pad.right;
     const h = ch - pad.top - pad.bottom;
     const n = chart.labels.length;
     const xAt = (i) => pad.left + (w / (n - 1)) * i;
+    const unitStr = chart.unit ? ` ${chart.unit}` : '';
 
     drawAxes(ctx, pad, w, h, chart.yMax, chart.yStep);
 
@@ -686,8 +681,6 @@ function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
         });
     });
 
-    // Valor final de cada serie, impreso al lado del último punto:
-    // da una lectura rápida sin necesidad de pasar el mouse.
     chart.series.forEach((s) => {
         const lastVal = s.values[s.values.length - 1];
         const x = pad.left + w;
@@ -708,9 +701,6 @@ function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
     });
     ctx.textAlign = 'left';
 
-    // Al pasar el mouse por una fecha, se resaltan las 3 series a la vez
-    // (línea guía vertical + anillo en cada punto de ese instante), y el
-    // tooltip muestra el valor de cada una juntas, no una por una.
     if (hoverIndex !== null && hoverIndex !== undefined) {
         const hx = xAt(hoverIndex);
         ctx.beginPath();
@@ -737,9 +727,6 @@ function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
         });
     }
 
-    // Una banda vertical por fecha (no un punto por serie): así al pasar
-    // el mouse sobre cualquier parte de esa columna aparecen las 3 series
-    // de ese instante juntas en el tooltip.
     const bandW = n > 1 ? w / (n - 1) : w;
     return chart.labels.map((label, i) => ({
         type: 'rect',
@@ -750,7 +737,7 @@ function drawMultiLineChart(ctx, cw, ch, chart, hoverIndex) {
         tx: xAt(i),
         ty: pad.top,
         idx: i,
-        label: `${label}\n` + chart.series.map((s) => `${s.name}: ${s.values[i]}`).join('\n'),
+        label: `${label}\n` + chart.series.map((s) => `${s.name}: ${s.values[i]}${unitStr}`).join('\n'),
     }));
 }
 
@@ -758,7 +745,7 @@ function drawPieChart(ctx, cw, ch, chart) {
     const cx = cw / 2;
     const cy = ch / 2;
     const outerR = Math.max(10, Math.min(cw, ch) / 2 - 24);
-    const innerR = outerR * 0.55; // agujero de la dona
+    const innerR = outerR * 0.55;
     const total = chart.slices.reduce((a, s) => a + s.value, 0);
 
     ctx.save();
@@ -798,8 +785,6 @@ function drawPieChart(ctx, cw, ch, chart) {
         ctx.textBaseline = 'middle';
         ctx.fillText(`${slice.value}%`, lx, ly);
 
-        // Región sensible: un círculo centrado sobre la porción, para
-        // mostrar el detalle exacto (etiqueta + valor real) al pasar el mouse.
         hitRegions.push({
             type: 'circle', x: lx, y: ly, r: Math.max(16, angle * labelR * 0.4),
             tx: lx, ty: ly,
@@ -809,8 +794,6 @@ function drawPieChart(ctx, cw, ch, chart) {
         startAngle = endAngle;
     });
 
-    // Anillo interior de la dona (borde del agujero), en vez de un total
-    // pegado al centro — queda más limpio y más "dona".
     ctx.beginPath();
     ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(244,244,240,0.25)';
@@ -828,7 +811,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const dataPromise = loadFilesData();
     setupLogin();
     runBootSequence(async () => {
-        await dataPromise; // asegura que data/files.json ya esté leído
+        await dataPromise;
         showView('view-login');
         $('user-input').focus();
     });
