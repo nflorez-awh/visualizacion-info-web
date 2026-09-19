@@ -414,7 +414,7 @@
     "classification": "SECRET",
     "requiresFloppy": false,
     "chart": {
-      "kind": "bar",
+      "kind": "map",
       "title": "INDICE DE SEGURIDAD POR REGION",
       "subtitle": "Escala 0 (critico) - 100 (seguro) / Estimacion sobre relevamiento de campo",
       "labels": [

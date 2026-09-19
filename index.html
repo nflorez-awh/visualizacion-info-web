@@ -48,6 +48,35 @@
     <p class="bar-sub">USER: <span id="session-user"></span> | CLEARANCE: TOP SECRET | SESSION: <span id="session-timer">00:00:00</span></p>
     <hr class="divider" />
 
+    <!-- FILTROS -->
+    <div class="filter-bar" id="filter-bar">
+        <div class="filter-row">
+            <label class="filter-label" for="index-search">BUSCAR</label>
+            <input id="index-search" class="filter-input" type="text" spellcheck="false" autocomplete="off"
+                   placeholder="archivo, gráfico, serie, categoría…  ( / )" />
+            <span id="filter-count" class="filter-count"></span>
+        </div>
+        <div class="filter-row">
+            <span class="filter-label">TIPO</span>
+            <div class="chip-group" id="type-chips">
+                <button type="button" class="chip" data-type="all">TODOS</button>
+                <button type="button" class="chip" data-type="chart">GRAFICOS</button>
+                <button type="button" class="chip" data-type="bar">BAR</button>
+                <button type="button" class="chip" data-type="line">LINE</button>
+                <button type="button" class="chip" data-type="pie">PIE</button>
+                <button type="button" class="chip" data-type="text">TEXTO</button>
+            </div>
+            <span class="filter-label">CLASIF.</span>
+            <div class="chip-group" id="class-chips">
+                <button type="button" class="chip" data-class="all">TODAS</button>
+                <button type="button" class="chip chip-top" data-class="TOP SECRET">TOP SECRET</button>
+                <button type="button" class="chip chip-secret" data-class="SECRET">SECRET</button>
+                <button type="button" class="chip chip-conf" data-class="CONFIDENTIAL">CONFIDENTIAL</button>
+            </div>
+            <button type="button" class="chip chip-reset" id="filter-reset" hidden>LIMPIAR [X]</button>
+        </div>
+    </div>
+
     <table class="file-table">
         <thead>
         <tr>
@@ -64,8 +93,11 @@
     </table>
 
     <footer class="bar-footer">
-        <span>↑↓ NAVEGAR &nbsp; [ENTER] ABRIR &nbsp; ⊞=FLOPPY &nbsp; [BAR/LINE/PIE]=GRAFICO</span>
-        <span>[F10] CERRAR SESION</span>
+        <span>↑↓ NAVEGAR &nbsp; [ENTER] ABRIR &nbsp; [/] BUSCAR &nbsp; [T] TIPO &nbsp; [C] CLASIF. &nbsp; [X] LIMPIAR &nbsp; ⊞=FLOPPY</span>
+        <span class="footer-right">
+            <button type="button" class="footer-btn" data-tutorial>[F1] TUTORIAL</button>
+            <span>[F10] CERRAR SESION</span>
+        </span>
     </footer>
 </section>
 
@@ -84,10 +116,14 @@
 
     <footer class="bar-footer">
         <span>[ESC] VOLVER AL INDICE DE ARCHIVOS</span>
-        <span id="doc-hint"></span>
+        <span class="footer-right">
+            <span id="doc-hint"></span>
+            <button type="button" class="footer-btn" data-tutorial>[F1] TUTORIAL</button>
+        </span>
     </footer>
 </section>
 
 <script src="script.js"></script>
+<script src="tutorial.js"></script>
 </body>
 </html>
